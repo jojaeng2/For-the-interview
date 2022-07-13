@@ -8,6 +8,7 @@
   - [데이터베이스]()
   - [컴퓨터구조]()
   - [자료구조]()
+  - [알고리즘]()
 - Chapter 2. Language
   - Java
 - Chapter 3. 기술
@@ -15,9 +16,9 @@
   - Redis
   - JPA
 
-- 후기
+- 면접 후기
   - [2022 카카오 인턴십](https://blog.naver.com/ds4ouj/222767468397)
-
+  
 
 </br>
 
