@@ -46,3 +46,4 @@
 
 ## :bulb: [자료구조](https://github.com/jojaeng2/Preparing-for-the-interview/tree/main/CS/DataStructure)
   - Array
+  - List
