@@ -2,6 +2,7 @@
 - [DataStructure](#datastructure)
   - [Array](#array)
   - [List](#list)
+  - [Stack](#stack)
   
 
 
@@ -152,4 +153,84 @@ void LinkedList::deleteNode(node* prevNode) {
 	delete temp;
 }
 
+```
+
+
+## Stack
+스택은 기본적으로 LIFO(Last In First Out), 즉 후입선출의 개념을 가지고 있는 자료구조이다.  
+나중에 들어간 것이 가장 먼저 나오는 특성상 깊이 우선 탐색에 DFS의 구현에 자주 사용하곤 한다. 
+<br>
+DFS는 재귀로도 구현할 수있고, 나도 재귀로 짜는것을 굉장히 선호한다. 그러면 왜? DFS에 재귀와 스택이 둘다 사용될 수있는지 자연스레 의문이 생긴다.  
+이는 재귀 함수가 하드웨어 상으로 어떻게 구현되는지 이해하면 아주 쉽게 납득할 수있다.
+<br>
+
+![image](https://user-images.githubusercontent.com/76645095/178663156-47b4fd86-d4b0-40c1-9328-a65a4f1da3ae.png)  
+
+<br>
+프로세스의 메모리는 위와같이 구성된다. 이때 재귀 함수를 들어가면 스택 영역 메모리에 각 함수별 데이터가 들어간다.  
+<br>
+<br>
+현재 함수에서 재귀 함수를 실행한다면, 현재 함수의 상태가 스택 영역에 저장되고 pop 되기를 기다린다. 새롭게 실행된 함수가 또 재귀 함수를 호출하고 .. 스택 영역에 또 저장된다. 
+<br>
+<br>
+만약 함수가 계속 들어가서 스택 영역에 할당된 메모리 영역을 벗어나게 된다면, 이때 마주치는 것이 스택오버 플로우이다. 
+<br>
+<br>
+이 흐름을 잘보면, 재귀 함수도 후입 선출의 구조를 가진다는 것을 알 수있다. 그리고 이는 스택 자료구조의 패러다임과 일치한다. 그리고 가장 깊은 노드를 우선으로 탐색하는 DFS 알고리즘의 패러다임이 일치하기 때문에 재귀와 스택 모두를 활용할 수있는 것이다.
+
+<br>
+
+스택 자료구조가 가지는 특징은 아래와 같다.  
+1. 배열과 달리 index를 사용할 수없기 때문에 특정 인덱스 value에 O(1)에 접근할 수없다.
+2. 스택에 데이터를 추가하거나 삭제하는 연산은 O(1)이 소요된다. 
+3. 배열과 리스트로 구현이 가능하고, 리스트의 장점 중 하나인 메모리 낭비가 없다는 특징을 그대로 살릴 수있다.
+
+스택 자료구조를 그림으로 나타내면 아래와 같이 나타낼 수있다.
+<br>
+
+<img width="326" alt="image" src="https://user-images.githubusercontent.com/76645095/178665681-e3c1f601-5626-4b64-bf5b-50ef08b48e24.png">
+
+<br>
+<br>
+
+스택은 배열과 연결 리스트 둘다 활용해서 구현할 수있다. 연결 리스트를 이용해 C++로 구현해보면 아래와 같다.
+
+```C++
+struct Node {
+    int data;
+    Node* next;
+    Node() {
+        next = NULL;
+        data = 0;
+    }
+ 
+    Node(int i, Node* ptr) //ptr 뒤에 추가
+    {
+        data = i;
+        next = ptr->next;
+        ptr->next = this; 
+    }    
+};
+ 
+struct Stack {
+    Node *head;
+    int count;
+    Stack() { //생성자
+        head = new Node(); //더미노드
+        count = 0;
+    }
+ 
+    void pop() { //데이터 제거
+        Node *tmp = head;
+        head = head->next; 
+        delete tmp; 
+        count--;
+    }
+ 
+    void push(int i) { //데이터 삽입
+        new Node(i, head);
+        count++;
+    }
+
+};
 ```
