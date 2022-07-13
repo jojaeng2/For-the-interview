@@ -1,4 +1,4 @@
-# 면접을 대비하며
+# CS 지식 저장소
 
 ## :memo: 목차
 
@@ -45,3 +45,4 @@
 </br>
 
 ## :bulb: [자료구조](https://github.com/jojaeng2/Preparing-for-the-interview/tree/main/CS/DataStructure)
+  - Array
