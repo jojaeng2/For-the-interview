@@ -48,3 +48,4 @@
   - Array
   - List
   - Stack
+  - Queue

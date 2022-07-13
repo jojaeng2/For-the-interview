@@ -3,6 +3,7 @@
   - [Array](#array)
   - [List](#list)
   - [Stack](#stack)
+  - [Queue](#queue)
   
 
 
@@ -233,4 +234,70 @@ struct Stack {
     }
 
 };
+```
+
+
+## Queue
+큐도 스택만큼 간단한 자료구조이다.  
+스택은 LIFO 자료구조인 반면, 큐는 FIFO 자료구조이다. 다른 CS 과목들을 공부한적 있다면 FIFO는 하드웨어 상에서 굉장히 자주 사용하는 기법인 것을 알것이고, 큐를 이해하기도 쉬울 것이다.  
+<br>
+큐는 스택과 굉장히 유사하지만, pop을 하는 위치가 다르다. 따라서 큐의 특징은 스택과 굉장히 유사하다고 볼 수있다.
+
+1. 배열과 달리 index를 사용할 수없기 때문에 특정 인덱스 value에 O(1)에 접근할 수없다.
+2. 큐에 데이터를 추가하거나 삭제하는 연산은 O(1)이 소요된다. 
+3. 배열과 리스트로 구현이 가능하고, 리스트의 장점 중 하나인 메모리 낭비가 없다는 특징을 그대로 살릴 수있다.
+
+큐 자료구조는 터널을 생각하면 바로 이해할 수있다. 자동차가 터널에 들어간다면, 분명히(?) 들어간 순서대로 자동차가 나올 것이다. 그림으로 나타내면 아래와 같다.
+<br>
+
+<img width="257" alt="image" src="https://user-images.githubusercontent.com/76645095/178669567-0197da6e-0085-466f-b0f1-fdc1195debbb.png">
+
+<br>
+
+스택은 배열로 구현하기 간단하다. 하지만, 큐는 어떻게 배열로 구현할 수있을까? 큐를 배열로 구현하기 위해서는 modulo 연산을 활용하여 순환 배열을 만들어주면 된다.  
+그럼에도 리스트로 구현하는 것이 훨씬 간단하기 때문에 리스트로 큐를 구현해보면 아래의 코드와 같이 구현할 수있다. 한번 구현해봤다면 그냥 맘편하게 STL을 쓰자.
+
+```C++
+using namespace std;
+struct Node {
+    int data;
+    Node *next;
+};
+ 
+struct LinkedQueue {
+    Node *front, *rear;
+    int len = 0;
+    LinkedQueue() {
+        front = rear = NULL;
+    }
+    bool isEmpty() {
+        return len ==0;
+    }
+ 
+    void push(int data) {
+        Node *node = (Node*)malloc(sizeof(Node));
+        node->data = data;
+        node->next = NULL;
+        if (isEmpty()) {
+            front = rear = node;
+        }
+        else {
+            rear->next = node;
+            rear = rear->next;
+        }
+        len++;
+    }
+ 
+    int pop() {
+ 
+        Node *delNode = front;
+        int ret = delNode->data;
+        front = delNode->next;
+        free(delNode);
+        len--;
+        return ret;
+    }
+};
+ 
+
 ```
