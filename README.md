@@ -38,6 +38,7 @@
 ## :bulb: [데이터베이스](https://github.com/jojaeng2/Preparing-for-the-interview/tree/main/CS/Database)
   - Database 시스템의 개념
   - 관계 데이터 모델
+  - 데이터베이스 정규화
 
 </br>
 
