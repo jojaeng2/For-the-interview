@@ -2,19 +2,27 @@
 
 ## :memo: 목차
 
-- CS 지식
-  - [네트워크]()
-  - [운영체제]()
-  - [데이터베이스]()
-  - [컴퓨터구조]()
-  - [자료구조]()
+- Chapter 1. CS 지식
+  - [네트워크](https://github.com/jojaeng2/Preparing-for-the-interview/tree/main/Network)
+  - [운영체제](https://github.com/jojaeng2/Preparing-for-the-interview/tree/main/OperatingSystem)
+  - [데이터베이스](https://github.com/jojaeng2/Preparing-for-the-interview/tree/main/Database)
+  - [컴퓨터구조](https://github.com/jojaeng2/Preparing-for-the-interview/tree/main/ComputerStructure)
+  - [자료구조](https://github.com/jojaeng2/Preparing-for-the-interview/tree/main/DataStructure)
+  - [알고리즘]()
+- Chapter 2. Language
+  - Java
+- Chapter 3. 기술
+  - Spring
+  - Redis
+  - JPA
 
-- [후기](후기)
-
+- 면접 후기
+  - [2022 카카오 인턴십](https://blog.naver.com/ds4ouj/222767468397)
+  
 
 </br>
 
-# 1. CS 지식
+# Chapter 1. CS 지식
 ## :bulb: [네트워크]()
 
 
