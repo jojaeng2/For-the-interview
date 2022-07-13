@@ -24,6 +24,8 @@
 
 # Chapter 1. CS 지식
 ## :bulb: [네트워크](https://github.com/jojaeng2/Preparing-for-the-interview/tree/main/CS/Network)
+  - 인터넷 네트워크
+  - 애플리케이션 계층
 
 
 </br>
