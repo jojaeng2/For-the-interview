@@ -45,6 +45,7 @@
 
 ## :bulb: [컴퓨터구조](https://github.com/jojaeng2/Preparing-for-the-interview/tree/main/CS/ComputerStructure)  
   - 시스템 버스란
+  - CPU의 구조와 기능
 
 </br>
 
