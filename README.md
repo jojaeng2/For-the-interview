@@ -54,3 +54,4 @@
   - List
   - Stack
   - Queue
+  - Heap
