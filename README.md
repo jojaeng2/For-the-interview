@@ -31,6 +31,8 @@
 </br>
 
 ## :bulb: [운영체제](https://github.com/jojaeng2/Preparing-for-the-interview/tree/main/CS/OperatingSystem)
+  - 운영체제의 역할
+  - 
 
 
 </br>
