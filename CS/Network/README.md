@@ -22,7 +22,7 @@
     - TCP 4 way handshake
     - TCP 흐름제어
     - TCP 혼잡제어
-  - [4. 네트워크 계층](#4-네트워크-계층)
+  - [4. 네트워크 계층-데이터 평면](#4-네트워크-계층-데이터-평면)
 
 
 </br>
@@ -403,3 +403,6 @@ TCP 연결이 시작될 때, cwnd의 값은 일반적으로 1 MSS로 초기화�
 빠른 회복은 여러 방법이 존재하지만, 대표적으로 TCP Tahoe, TCP Reno가 존재한다.  
 - TCP Tahoe : cwnd를 1MSS로 줄이고 다시 slow start 단계로 진입한다. 이때 congestion avoidance에서 혼잡이 발생해 절반으로 줄인 cwnd에 도달하면 다시 congestion avoidance로 진입한다.  
 - TCP Reno : Reno는 congestion avoidance에서 절반으로 줄인 cwnd를 시작점으로 다시 congestion avoidance를 수행한다.
+
+
+## 4. 네트워크 계층-데이터 평면
