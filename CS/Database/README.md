@@ -284,7 +284,7 @@ DB는 버퍼에 자주 사용하는 데이터를 저장해두며 LRU(Least Recen
 인덱스는 자료를 쉽고 빠르게 찾을 수있도록 만든 데이터 구조이다. 도서관에서 책을 찾을때, 서지목록을 보고 책의 위치를 찾는 것처럼 인덱스도 같은 역할을 한다.  
 <br>
 데이터베이스 인덱스란? 원하는 데이터를 빨리 찾기 위해 튜플의 키 값에 대한 물리적 위치를 기록해둔 자료구조이다.  
-일반적인 DBMS의 인덱스는 대부분 B-tree 구조로 되어 있다. B-tree에 대한 내용은 [[자료구조]](https://github.com/jojaeng2/Preparing-for-the-interview/tree/main/CS/DataStructure) 파트에 정리를 해놨으니 인덱스의 특징을 알아보자.  
+일반적인 DBMS의 인덱스는 대부분 B-tree 구조로 되어 있다. B-tree에 대한 내용은 [자료구조](https://github.com/jojaeng2/Preparing-for-the-interview/tree/main/CS/DataStructure) 파트에 정리를 해놨으니 인덱스의 특징을 알아보자.  
 
 B-tree 에서 검색은 루트 노드에서부터 값을 비교하여 중간 단계인 내부 노드에서 해당 노드를 찾고, 이런 단계를 거쳐 최종적으로 마지막 레벨인 리프 노드에 도달한다.  
 리프 노드에서는 해당 데이터의 저장 위치에 대응하는 rowID(테이블의 행에 대한 논리적 위치)를 가지고 있어 찾고자 하는 행을 바로 찾을 수있다.  
