@@ -18,6 +18,12 @@
   - [PSA](#psa)
   - [AOP](#aop)
   - [OOP](#oop)
+  - [SOLID](#solid)
+    - [SRP](#srp)
+    - [OCP](#ocp)
+    - [ISP](#isp)
+    - [LSP](#lsp)
+    - [DIP](#dip)
   - [Spring 컨테이너](#spring-컨테이너)
   - [Bean 객체란](#bean-객체란)
   - [싱글톤 컨테이너](#싱글톤-컨테이너)
@@ -143,6 +149,253 @@ public class UserService {
 ## AOP 
 
 ## OOP
+객체지향 프로그래밍 (Object-Oriented-Programming, OOP)는 '역할을 가진 객체들의 협력'으로 프로그램을 작성하는 패러다임이다.
+OOP의 특징으로는 아래의 4가지를 꼭 기억해야 한다.  
+1. 추상화  
+클래스의 공통된 속성을 바탕으로 필요한 부분만을 표현하고 불필요한 부분은 제거하는 기법이다.
+<br>
+2. 캡슐화  
+속성을 외부로 노출시키지 않고, 자신의 클래스에서만 사용할 수 있도록 만드는 기법이다. 따라서 자연스레 은닉화의 특징도 가진다.
+<br>
+
+3. 상속  
+공통된 속성을 가진 클래스들은 상속으로 코드의 중복을 제거하고, 재정의하여 코드의 재사용성을 높이는 기법이다.
+<br>
+
+4. 다형성  
+인터페이스를 활용해 같은 형태의 함수이지만, 다른 기능을 할 수있도록 만드는 기법이다.
+
+## SOLID
+SOLID는 객체 지향 프로그래밍에서 지켜야 하는 5대 원칙이다.  
+1. SRP(단일 책임 원칙)
+2. OCP(개방-폐쇄 원칙)
+3. LSP(리스코프 치환 원칙)
+4. DIP(의존 역전 원칙)
+5. ISP(인터페이스 분리 원칙)
+
+### SRP
+단일 책임의 원칙(SRP)은 하나의 모듈이 '한가지 책임'을 가져야 한다는 의미를 가지고 이것은 모듈이 변경되는 이유가 한가지여야 함을 의미한다.  
+예를들어 아래와 같이 사용자의 정보를 받아서, 비밀번호를 암호화하여 데이터베이스에 저장하는 로직이 있다고 가정하자.
+
+```JAVA
+@Service
+@RequiredArgsConstructor
+public class UserService {
+
+	private final UserRepository userRepository;
+
+	public void addUser(final String email, final String pw) {
+		final StringBuilder sb = new StringBuilder();
+
+		for(byte b : pw.getBytes(StandardCharsets.UTF_8)) {
+			sb.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
+		}
+
+		final String encryptedPassword = sb.toString();
+		final User user = User.builder()
+				.email(email)
+				.pw(encryptedPassword).build();
+
+		userRepository.save(user);
+	}
+}
+```
+이 UserService의 로직에는 많은 변경이 발생할 수있다. 예를들면 아래와 같은 상황들이 발생한다.
+- 기획팀: 사용자를 추가할 때 역할(Role)에 대한 정의가 필요하다.
+- 보안팀: 사용자의 비밀번호 암호화 방식에 개신이 필요하다.
+
+이러한 문제가 발생하는 이유는 UserService가 여러 액터로부터 단 하나의 책임을 가지고 있지 못하기 때문이며 이를위해서는 비밀번호 암호화에 대한 책임이 분리되어야 한다.  
+
+```JAVA
+@Component
+public class SimplePasswordEncoder {
+
+	public void encryptPassword(final String pw) {
+		final StringBuilder sb = new StringBuilder();
+
+		for(byte b : pw.getBytes(StandardCharsets.UTF_8)) {
+			sb.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
+		}
+
+		return sb.toString();
+	}
+}
+
+@Service
+@RequiredArgsConstructor
+public class UserService {
+
+	private final UserRepository userRepository;
+	private final SimplePasswordEncoder passwordEncoder;
+
+	public void addUser(final String email, final String pw) {
+		final String encryptedPassword = passwordEncoder.encryptPassword(pw);
+
+		final User user = User.builder()
+				.email(email)
+				.pw(encryptedPassword).build();
+
+		userRepository.save(user);
+	}
+}
+```
+위와같이 암호화를 책임지는 별도의 클래스를 만들어 UserService로부터 이를 추상화하고 해당 클래스를 합성하여 접근 및 사용하면 문제를 해결할 수있다.  
+
+이렇게 단일 책임 원칙을 제대로 지키면 변경이 필요할 때 수정할 대상이 명확해진다.  
+
+또한 서로의 책임이 영향을 주지 않도록 추상화함으로써 애플리케이션의 변화에 손쉽게 대응할 수있다.
+
+### OCP
+개방 폐쇄 원칙(Open-Closed Principle, OCP)는 확장에 열려있고, 수정에 대해서는 닫혀있어야 한다는 원칙으로 각각이 갖는 의미는 아래와 같다.  
+- 확장에 열려 있다 : 요구사항이 변경될 때 새로운 동작을 추가하여 애플리케이션의 기능을 확장할 수있다.
+- 수정에 대해 닫혀있다 : 기존의 코드를 수정하지 않고 애플리케이션의 동작을 추가하거나 변경할 수있다.
+
+아래의 예시를 통해 좀더 자세히 알아보자.  
+비밀번호 암호화를 강화해야 한다는 요구사항이 새롭게 들어왔다고 가정하고, SHA-256 알고리즘을 사용하는 새로운 PassEncoder를 생성했다.
+
+``` JAVA
+@Component
+public class SHA256PasswordEncoder {
+
+	private final static String SHA_256 = "SHA-256";
+
+	public String encryptPassword(final String pw)  {
+		final MessageDigest digest;
+		try {
+			digest = MessageDigest.getInstance(SHA_256);
+		} catch (NoSuchAlgorithmException e) {
+			throw new IllegalArgumentException();
+		}
+
+		final byte[] encodedHash = digest.digest(pw.getBytes(StandardCharsets.UTF_8));
+
+		return bytesToHex(encodedHash);
+	}
+
+	private String bytesToHex(final byte[] encodedHash) {
+		final StringBuilder hexString = new StringBuilder(2 * encodedHash.length);
+
+		for (final byte hash : encodedHash) {
+			final String hex = Integer.toHexString(0xff & hash);
+			if (hex.length() == 1) {
+				hexString.append('0');
+			}
+			hexString.append(hex);
+		}
+
+		return hexString.toString();
+	}
+}
+```
+이제 새로운 비밀번호 암호화 정책을 적용하려고 보니, 새로운 암호화 정책과 무관한 UserService를 수정해야 하는 문제가 발생했다.  
+
+```java
+@Service
+@RequiredArgsConstructor
+public class UserService {
+
+	private final UserRepository userRepository;
+	private final SHA256PasswordEncoder passwordEncoder;
+
+	...
+    
+}
+```
+이렇게 무관한 코드를 수정하는 것은 기존의 코드를 수정하지 않아야 하는 OCP에 위배된다. 그리고 나중에 또 암호화 정책이 변경된다면 UserService를 또 다시 변경해야 한다.  
+
+OCP 원칙을 지키기 위해서는 '추상화'에 의존해야 한다.  
+변하지 않는 부분은 고정하고, 변하는 부분은 추상화 한다면, 변경이 필요한 경우에 추상화된 부분을 수정하여 개방-폐쇄 원칙을 지킬 수 있게 된다.  
+
+위의 예시에서 변화가 요구되는 것은 구체적인 암호화 정책이다.  
+그러므로, UserService는 구체적으로 어떤 암호화 정책이 사용되는지 알 필요 없이 단지 PassEncoder라는 객체를 통해 추상적인 암호화 정책을 받기만 하면 된다.  
+```JAVA
+public interface PasswordEncoder {
+    String encryptPassword(final String pw);
+}
+
+@Component
+public class SHA256PasswordEncoder implements PasswordEncoder {
+
+	@Override
+	public String encryptPassword(final String pw)  {
+      ...
+	}
+}
+
+@Service
+@RequiredArgsConstructor
+public class UserService {
+
+	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
+
+	public void addUser(final String email, final String pw) {
+		final String encryptedPassword = passwordEncoder.encryptPassword(pw);
+
+		final User user = User.builder()
+				.email(email)
+				.pw(encryptedPassword).build();
+
+		userRepository.save(user);
+	}
+    
+}
+```
+따라서 위와같이 구체적인 암호화 클래스에 의존하지 않고 인터페이스에 의존하도록 추상화를 하면 OCP 원칙을 지킬 수있게 된다.
+
+### ISP
+객체가 충분히 작은 단위로 설계됐더라도, 목적과 관심이 각기 다른 클라이언트가 있다면 인터페이스를 통해 적절히 분배할 필요가 있는데, 이를 인터페이스 분리 원칙 (ISP)라고 부른다.  
+<br>
+즉, ISP란 클라이언트의 목적과 용도에 적합한 인터페이스만을 제공하는 것이다.  
+예를들어 사용자가 비밀번호를 변경할 때 입력한 비밀번호가 기존의 비밀번호와 동일한지 검색해야 하는 로직이 추가된다고 가정하자.  
+그러면, 아래와 같이 isCorrectPassword라는 퍼블릭 인터페이스를 추가할 수있을 것이다.
+
+``` JAVA
+@Component
+public class SHA256PasswordEncoder implements PasswordEncoder {
+
+	@Override
+	public String encryptPassword(final String pw)  {
+		...
+	}
+
+	public String isCorrectPassword(final String rawPw, final String pw) {
+		final String encryptedPw = encryptPassword(rawPw);
+		return encryptedPw.equals(pw);
+	}
+}
+```
+
+새롭게 추가될 Authentication 클래스는 isCorrectPassword에 접근하기 위해 구체 클래스인 SHA256PasswordEncoderd를 주입 받아야 한다.  
+그러면, 불필요한 encryprPassword에 접근할 수있게 되는 것이고, 이는 ISP를 위배하는 것이다.  
+
+이를 해결하기 위해서는 비밀번호 검사를 의미하는 별도의 인터페이스(PasswordChecker)를 만들고, 해당 인터페이스를 Authentication이 주입받도록 하는 것이 좋다.
+
+``` JAVA
+public interface PasswordChecker {
+    String isCorrectPassword(final String rawPw, final String pw);
+}
+
+@Component
+public class SHA256PasswordEncoder implements PasswordEncoder, PasswordChecker {
+
+	@Override
+	public String encryptPassword(final String pw)  {
+		...
+	}
+  
+	@Override
+	public String isCorrectPassword(final String rawPw, final String pw) {
+		final String encryptedPw = encryptPassword(rawPw);
+		return encryptedPw.equals(pw);
+	}
+}
+```
+이렇게 클라이언트에 따라 인터페이스를 분리하면 변경에 대한 영향을 더욱 세밀하게 제어할 수있다.
+
+### LSP
+
+### DIP
 
 ## Spring 컨테이너
 Spring 컨테이너는 애플리케이션을 구성하는 오브젝트(빈)을 생성하고 관리한다. 또한 객체에 대해 의존성 주입(Dependency Injection, DI)를 통해 두 객체의 결합도를 낮추는 역할을 한다.
