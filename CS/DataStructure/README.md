@@ -6,11 +6,13 @@
   - [Queue](#queue)
   - [Heap](#heap)
   - [B Tree](#b-tree)
+  - [Hash](#hash)
   
 
 
 </br>
 
+* * *
 ## Array
 데이터가 많아지면 관련된 데이터끼리 그룹으로 관리해야 하는 필요성이 생긴다. 이때 여러 데이터를 하나의 이름으로 묶어서 편하게 사용할 수있는 자료구조이다.
 <br>
@@ -57,13 +59,13 @@ void init() {
 
 int main() {    
     ios_base :: sync_with_stdio(false);
-   cin.tie(NULL);
-   cout.tie(NULL);
-   init();
+    cin.tie(NULL);
+    cout.tie(NULL);
+    init();
 }
 
 ```
-
+* * *
 ## List
 배열의 가장 큰 특징은 인덱스가 있다는 것이다. 원하는 데이터의 인덱스를 알고 있다면 O(1)만에 해당 데이터를 얻을 수있다. 
 하지만, 이것은 단점이기도 하다. 인덱스를 이용해서 데이터를 가져오려면, 데이터에 대한 인덱스의 값이 고정되어야 하기 때문에 해당 value가 삭제되면 삭제된 상태의 빈 공간이 생기게 되고 이는 메모리 낭비를 야기한다. 
@@ -158,7 +160,7 @@ void LinkedList::deleteNode(node* prevNode) {
 
 ```
 
-
+* * *
 ## Stack
 스택은 기본적으로 LIFO(Last In First Out), 즉 후입선출의 개념을 가지고 있는 자료구조이다.  
 나중에 들어간 것이 가장 먼저 나오는 특성상 깊이 우선 탐색에 DFS의 구현에 자주 사용하곤 한다. 
@@ -217,28 +219,24 @@ struct Node {
  
 struct Stack {
     Node *head;
-    int count;
     Stack() { //생성자
         head = new Node(); //더미노드
-        count = 0;
     }
  
     void pop() { //데이터 제거
         Node *tmp = head;
         head = head->next; 
         delete tmp; 
-        count--;
     }
  
     void push(int i) { //데이터 삽입
         new Node(i, head);
-        count++;
     }
 
 };
 ```
 
-
+* * *
 ## Queue
 큐도 스택만큼 간단한 자료구조이다.  
 스택은 LIFO 자료구조인 반면, 큐는 FIFO 자료구조이다. 다른 CS 과목들을 공부한적 있다면 FIFO는 하드웨어 상에서 굉장히 자주 사용하는 기법인 것을 알것이고, 큐를 이해하기도 쉬울 것이다.  
@@ -268,12 +266,8 @@ struct Node {
  
 struct LinkedQueue {
     Node *front, *rear;
-    int len = 0;
     LinkedQueue() {
         front = rear = NULL;
-    }
-    bool isEmpty() {
-        return len ==0;
     }
  
     void push(int data) {
@@ -287,7 +281,6 @@ struct LinkedQueue {
             rear->next = node;
             rear = rear->next;
         }
-        len++;
     }
  
     int pop() {
@@ -296,14 +289,13 @@ struct LinkedQueue {
         int ret = delNode->data;
         front = delNode->next;
         free(delNode);
-        len--;
         return ret;
     }
 };
  
 
 ```
-
+* * *
 ## Heap
 힙은 내가 좋아하는 자료구조 중 하나이다. 처음 힙을 공부했을때 어떻게 이런 천재적인 발상을 떠올릴 수있는건지 충격을 받았던 기억이 난다.
 
@@ -556,3 +548,67 @@ key 값중 가장 큰 값인 20보다 22가 크기 때문에 오른쪽에 있는
 
 ​
 B-Tree에서 삽입 작업의 경우 루트 노드에서부터 시작하여 값을 비교하면서 -> 삽입될 위치를 먼저 찾고, 노드에 저장할 공간이 없으면 새로운 노드로 분할하여 값을 이동시킨 후 삽입한다. 이러한 과정을 통해 값이 새로 입력되더라도 트리는 향상 균형 상태를 유지한다.
+
+## Hash
+해시(Hash)는 데이터를 Key-Value 쌍으로 저장할 수 있는 자료구조이다.  
+Hash는 Key를 해싱하여 Value가 저장된 위치를 빠르게 찾을 수있게 해주는데, 해시 충돌이 발생하지 않는다고 가정하면 값을 삽입하고, 삭제하고, 검색하는데 상수 시간이 소요된다.  
+해시 충돌은 뒤에 나오는 내용이다.
+<br>
+<br>
+<img width="880" alt="image" src="https://user-images.githubusercontent.com/76645095/179971994-701da9be-d876-4325-86b3-ba8c76564304.png">
+<br>
+
+그림을 보면, 4가지 영역이 존재하는 것을 볼 수있다. 각각의 영역의 역할은 아래와 같다.  
+- Key : 우리가 key로 설정한 값, 해시 함수의 input값이 된다.
+- Hash Function : 해시 함수는 input으로 들어온 사용자의 키를 변환한다. 이때 나오는 value는 위의 그림에서 Hash 영역의 값이다. 또한 Hash Function의 특징은 무조건 Value의 길이를 고정된 값으로 반환한다는 것이다. Key에 따라 Value의 길이가 변한다면 그만큼 공간 효율성이 떨어지기 때문에 무조건 길이가 같은 value를 반환하도록 한다.
+- Hash : Hash Function로 처리된 Value로 데이터가 저장된 주소를 가리킨다. 
+- Bucket : 데이터가 저장되는 공간이다.
+
+이 요소들을 이해하면, Hash에서 왜 연산을 수행하는데 O(1)이 소요되는지 이해할 수있다.  
+위의 그림에서는 탐색에 필요한 연산이 보이질 않는다. 그냥 Key에 대하여 Hash Function을 수행하고, 결과로 얻은 Value를 통해 데이터가 저장된 영역에 접근하면 된다.  
+<br>
+Hash Function 연산은 매우 빠른 시간내에 수행되므로, O(1)만에 데이터가 저장된 주소를 얻을 수있고, 바로 데이터에 접근할 수있다.  
+
+이런 사기적인 자료구조를 왜? 안쓰고 다른 자료구조들을 쓸까? 그 이유는 간단하다.  
+
+컴퓨터 자원이 유한하기 때문이다.  
+모든 Key에 대하여 O(1) 접근을 보장하기 위해서는 HashFunction으로 얻은 Value에 대응하는 Bucket이 무수히 많아야 한다. 하지만, 우리가 Key로 선택할 수있는 값은 무한하다. 아주 쉬운 예시로 문자열을 무한대로 붙혀 Key로 사용하고, 대응하는 Bucket을 만든다해도 우리의 컴퓨터 자원은 언젠가는 고갈된다.  
+
+따라서 Hash Function을 사용하는 많은 구현체들은 메모리를 절약하기 위하여 실제 해시 함수 표현 범위 N 보다 작은 'M'개의 Bucket만을 사용한다.  
+이렇게 Bucket M개를 사용한다고 고정하면, Hash Function으로 얻은 Value 들은 1/M의 확률로 같은 Bucket을 사용하게 된다.  
+서로 다른 Key가 같은 Bucket을 사용하게 되는 이 현상을 '해시 충돌'이라고 부르고, 해시 충돌은 해시 함수를 얼마나 잘 구현했는지 상관없이 무조건 발생한다.   
+
+하지만, 해시 충돌이 발생하더라도 [Key - Value] 쌍 데이터를 잘 저장하고 조회할 수있게 하는 대표적인 방식이 2가지 존재하며 Hash를 사용하는 대부분의 자료구조는 이 두가지 방법을 응용한 것이다.  
+
+1. Chaining  
+Chaining은 Bucket에 연결리스트를 추가하는 방법이다. 
+<br>
+<br>
+<img width="841" alt="image" src="https://user-images.githubusercontent.com/76645095/179980517-06255acc-4702-4700-b60b-d336ea314aba.png">
+<br>
+<br>
+그림을 보면, 새로운 Key4가 Value4를 저장하려고 한다. 하지만, Hash Function으로 얻은 결과가 Key1의 Hash값과 충돌이 발생했다.  
+여기서 Chaining 방식은 동일한 버킷에 저장하되, 연결 리스트 형식으로 데이터를 추가한다.  
+<br>
+이제 연결 리스트를 이용해 해시 충돌이 발생해도 값을 유지하지만, 연산에 필요한 시간복잡도는 더이상 O(1)이 아니다. 버킷에 존재하는 모든 연결리스트를 탐색해야 하기 때문에 탐색에 필요한 최악의 시간은 O(N)에 수렴하게 된다. 
+
+2. Open Addressing  
+Open Addressing은 Chaining과는 조금 다르게 비어있는 bucket 공간을 활용하는 특징을 가진다.
+Open Addressing을 구현하는 방법에도 2가지로 쪼개지는데, 하나씩 살펴보자.  
+    <br>
+   (1) Linear Probing  
+    <br>
+    <img width="866" alt="image" src="https://user-images.githubusercontent.com/76645095/179980863-cbafcfed-99ab-42c8-b6f5-2c94136fdc22.png">
+    <br>
+    해시 충돌이 발생하면 단순히 한칸씩 옮기며 빈 공간을 찾고, 빈 공간을 찾으면 데이터를 Bucket에 저장한다.  
+    매우 간단하지만, Chaining과 마찬가지로 더이상 삽입 연산에 필요한 시간복잡도는 O(1)이 아니며 최악의 경우 O(N)이 소요된다.  
+    <br>
+    Linear Probing 방식을 사용하면 한가지 문제가 또 존재한다. 바로 데이터들이 특정 위치에 집중된다는 것인데, 이 문제를 해결하기 위해서 아래의 방법이 사용된다.  
+    <br>
+    (2) Quadratic Probing
+    <br>
+    <br>
+    <img width="836" alt="image" src="https://user-images.githubusercontent.com/76645095/179981851-3e22b45d-6421-4ff3-a903-eb5ccd6f8955.png">
+    <br>
+    <br>
+    Quadratic Probing은 해시 충돌이 발생했을때 순차적으로 보지 않고, n^2씩 건너뛰며 빈 공간을 찾는다. 이러면 Linear Probing의 문제점을 해결할 수있지만, 마찬가지로 삽입 연산은 최악의 경우 O(N)에 수렴한다.

@@ -71,6 +71,7 @@
   - Queue
   - Heap
   - B Tree
+  - Hash
 
 
 # Chapter 2. Language
